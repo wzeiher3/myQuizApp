@@ -1,29 +1,38 @@
 /**
  * Example store structure
  */
-const store = {
+ let counter = 0;
+ let qNum = 1;
+ let correct = 0;
+ let incorrect = 0;
+ const store = {
   // 5 or more questions are required
   questions: [
     {
-      question: 'What color is broccoli?',
+      question: 'The sky is blue',
       answers: [
-        'red',
-        'orange',
-        'pink',
-        'green'
+       'yes', 
+       'no'
       ],
-      correctAnswer: 'green'
+      correctAnswer: 'true'
     },
     {
-      question: 'What is the current year?',
+      question: 'Javascript is super easy',
       answers: [
-        '1970',
-        '2015',
-        '2019',
-        '2005'
+        'yes', 
+        'no'
       ],
-      correctAnswer: '2019'
+      correctAnswer: 'false'
+    }, 
+    {
+      question: 'Thinkful is cool',
+      answers: [
+        'yes', 
+        'no'
+      ],
+      correctAnswer: 'true'
     }
+
   ],
   quizStarted: false,
   questionNumber: 0,
@@ -42,7 +51,7 @@ const store = {
  * You may add attributes (classes, ids, etc) to the existing HTML elements, or link stylesheets or additional scripts if necessary
  *
  * SEE BELOW FOR THE CATEGORIES OF THE TYPES OF FUNCTIONS YOU WILL BE CREATING 👇
- * 
+ * https://github.com/musicMan1337/myQuizApp.git
  */
 
 /********** TEMPLATE GENERATION FUNCTIONS **********/
@@ -53,6 +62,59 @@ const store = {
 
 // This function conditionally replaces the contents of the <main> tag based on the state of the store
 
+function renderQuestion(){
+  if(store.quizStarted)  
+    $('.question').html(store.questions[counter].question);
+    //console.log(store.questions[0].question);
+}
+
 /********** EVENT HANDLER FUNCTIONS **********/
 
 // These functions handle events (submit, click, etc)
+
+function submitAnswer(){
+    $('main').on('click', '#submit', function(event){
+      event.preventDefault();
+      let answer = 'default';
+      if(document.getElementById('true').checked)
+          answer = document.getElementById('true').value;
+      else if(document.getElementById('false').checked)
+          answer = document.getElementById('false').value;
+      else  
+          answer = 'still default';
+      console.log(answer);
+      if(store.questions[counter].correctAnswer == answer)
+      {
+        correct++;
+        alert("You are right!");
+      }
+      else{
+        incorrect++;
+        alert("You are wrong!");
+      }
+      
+      counter++;
+      store.questionNumber++;
+      $('.question-number').html(`<h2 class="question-number">Question: ${store.questionNumber}</h2>`);
+      $('.correct-counter').html(`<h3 class="correct-counter">Correct: ${correct}</h3>`);
+      $('.wrong-counter').html(`<h3 class="wrong-counter">Incorrect: ${incorrect}</h3>`);
+      renderQuestion();
+    })
+}
+
+function startQuiz(){
+  $('#start-button-div').on('click', '#start-button', function(event){
+    event.preventDefault();
+    store.questionNumber++;
+    store.quizStarted = true;
+    renderQuestion();
+  });
+}
+
+function handleQuestions() {
+  startQuiz();
+  renderQuestion();
+  submitAnswer();
+}
+
+$(handleQuestions);
